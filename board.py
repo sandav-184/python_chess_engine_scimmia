@@ -86,30 +86,6 @@ class GameState:
     
     def king_moves(self,square):
         return self.step_moves(square, KING_OFFSETS)    
-        
-    def slide_moves(self, square, direction):
-        moves = []
-        row, col = square
-        piece = self.piece_at(square)
-        
-        for d_row, d_col in direction:
-            new_row = row + d_row
-            new_col = col + d_col
-            
-            while in_bounds(new_row, new_col):
-                target = self.piece_at((new_row, new_col))
-                
-                if target == 0:
-                    moves.append(target)
-                    new_row += d_row
-                    new_col += d_col
-                elif target*piece < 0:
-                    moves.append(target)
-                    break
-                elif piece*target > 0:
-                    break
-        
-        return moves
 
     def queen_moves(self, square):
         return self.slide_moves(square, QUEEN_DIRECTION)
@@ -133,5 +109,29 @@ class GameState:
             if row == 1:
                 moves.append((row+2, col))
             moves.append((row+1, col))
+        
+    def slide_moves(self, square, direction):
+        moves = []
+        row, col = square
+        piece = self.piece_at(square)
+        
+        for d_row, d_col in direction:
+            new_row = row + d_row
+            new_col = col + d_col
+            
+            while in_bounds(new_row, new_col):
+                target = self.piece_at((new_row, new_col))
+                
+                if target == 0:
+                    moves.append((new_row, new_col))
+                    new_row += d_row
+                    new_col += d_col
+                elif target*piece < 0:
+                    moves.append((new_row, new_col))
+                    break
+                elif piece*target > 0:
+                    break
+        
+        return moves
             
         
