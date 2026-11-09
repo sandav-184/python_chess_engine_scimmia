@@ -1,0 +1,6 @@
+# Ignored folders
+__pycache__/
+
+
+#ignored files 
+AGENTS.md
