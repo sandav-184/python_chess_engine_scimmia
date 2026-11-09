@@ -109,7 +109,8 @@ class GameState:
             if row == 1:
                 moves.append((row+2, col))
             moves.append((row+1, col))
-        
+
+    # Apply move
     def slide_moves(self, square, direction):
         moves = []
         row, col = square
@@ -133,5 +134,5 @@ class GameState:
                     break
         
         return moves
-            
+    
         
