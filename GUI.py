@@ -59,15 +59,17 @@ def click_square(pos):
     clicked_square = (mouse_y//TILE_SIZE, mouse_x//TILE_SIZE)
     return clicked_square
     
-def draw_highlight(selected_square):
+def draw_highlight(selected_square, possible_moves):
+
     
     if selected_square is None:
         return
     row,col = selected_square
     screen.blit(HIGHLIGHT_SURFACE, (col*TILE_SIZE, row*TILE_SIZE))
 
-    
-    
+    for square in possible_moves:
+        m_row, m_col = square
+        screen.blit(HIGHLIGHT_SURFACE, (m_col*TILE_SIZE, m_row*TILE_SIZE))
     
     
 def draw_board():
@@ -116,7 +118,7 @@ def main():
                 running = False
 
         draw_board()
-        draw_highlight(selected_square)
+        draw_highlight(selected_square, state.get_moves(selected_square))
         draw_pieces(piece_surfaces, state.board)
         pygame.display.flip()
     
