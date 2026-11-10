@@ -54,6 +54,10 @@ class GameState:
             return False
         if self.is_own_piece(to_square):
             return False
+
+        if to_square not in self.get_moves(from_square):
+            return False
+
         
         from_square_row, from_square_col = from_square
         to_square_row, to_square_col = to_square
@@ -80,37 +84,7 @@ class GameState:
                 if piece*target<=0:
                     moves.append((new_row, new_col))
         return moves     
-    
-    def knight_moves(self,square):
-        return self.step_moves(square, KNIGHT_OFFSETS)    
-    
-    def king_moves(self,square):
-        return self.step_moves(square, KING_OFFSETS)    
 
-    def queen_moves(self, square):
-        return self.slide_moves(square, QUEEN_DIRECTION)
-    
-    def bishop_moves(self, square):
-        return self.slide_moves(square, BISHOP_DIRECTIONS)
-    
-    def rook_moves(self, square):
-        return self.slide_moves(square, ROOK_DIRECTIONS)
-    
-    def pawn_moves(self, square):
-        row, col = square
-        moves = []
-        
-        if self.piece_at(square) == 1:
-            if row == 6:
-                moves.append((row-2, col))
-            moves.append((row-1, col))
-                
-        if self.piece_at(square) == -1:
-            if row == 1:
-                moves.append((row+2, col))
-            moves.append((row+1, col))
-
-    # Apply move
     def slide_moves(self, square, direction):
         moves = []
         row, col = square
@@ -134,5 +108,68 @@ class GameState:
                     break
         
         return moves
+
+    
+    def knight_moves(self,square):
+        return self.step_moves(square, KNIGHT_OFFSETS)    
+    
+    def king_moves(self,square):
+        return self.step_moves(square, KING_OFFSETS)    
+
+    def queen_moves(self, square):
+        return self.slide_moves(square, QUEEN_DIRECTION)
+    
+    def bishop_moves(self, square):
+        return self.slide_moves(square, BISHOP_DIRECTIONS)
+    
+    def rook_moves(self, square):
+        return self.slide_moves(square, ROOK_DIRECTIONS)
+    
+    def pawn_moves(self, square):
+        row, col = square
+        moves = []
+        direction = self.piece_at(square)*-1
+        piece = self.piece_at(square)
+        starting_row = 6 if piece == 1 else 1
+
+
+        if self.piece_at((row+direction, col)) == 0:
+            moves.append((row+direction, col))
+            if row == starting_row and self.piece_at((row + 2*direction, col)) == 0:
+                moves.append((row + 2*direction, col))
+
+        for d_col in (-1, 1):
+            if self.piece_at((row+direction, col + d_col))*piece < 0:
+                moves.append((row+direction, col + d_col))
+
+        return moves
+
+
+    def get_moves(self, square):
+        piece = self.piece_at(square)
+        moves = []
+        
+        match abs(piece):
+            case 1:
+                moves.extend(self.pawn_moves(square))
+            case 2:
+                moves.extend(self.bishop_moves(square))
+            case 3:
+                moves.extend(self.knight_moves(square))
+            case 4:
+                moves.extend(self.rook_moves(square))
+            case 5:
+                moves.extend(self.queen_moves(square))
+            case 6:
+                moves.extend(self.king_moves(square))
+            case _ :
+                return []
+
+        return moves
+    
+
+
+
+   
     
         
